@@ -8,6 +8,7 @@ import UseCasesSection from './components/UseCasesSection';
 import AboutSection from './components/AboutSection';
 import ContactSection from './components/ContactSection';
 import ParticleBackground from './components/ParticleBackground';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   return (
@@ -16,15 +17,17 @@ function App() {
       <ParticleBackground />
       
       {/* Main Content */}
-      <div className="relative z-10">
-        <HeroSection />
-        <DemoSection />
-        <FeaturesSection />
-        <ModelFlowSection />
-        <UseCasesSection />
-        <AboutSection />
-        <ContactSection />
-      </div>
+      <ErrorBoundary>
+        <div className="relative z-10">
+          <HeroSection />
+          <DemoSection />
+          <FeaturesSection />
+          <ModelFlowSection />
+          <UseCasesSection />
+          <AboutSection />
+          <ContactSection />
+        </div>
+      </ErrorBoundary>
     </div>
   );
 }

@@ -61,6 +61,16 @@ const FeaturesSection = () => {
       specs: ['50+ Languages', 'Cultural Adaptation', 'Dialect Support'],
       demoText: 'Process audio in multiple languages simultaneously'
     }
+    ,
+    {
+      icon: FaHeart,
+      title: 'Speech Emotion Detection',
+      description: 'Identifies speaker emotions from vocal cues — happiness, sadness, anger, surprise, and more.',
+      color: 'accent',
+      details: 'State-of-the-art emotion classification using spectral, prosodic and deep-learned features. Accurate across demographics and noisy conditions.',
+      specs: ['94% Emotion Accuracy', 'Real-time', '8 Emotion Categories'],
+      demoText: 'Detect emotions like happiness, sadness, anger, or surprise in real-time'
+    }
   ];
 
   const containerVariants = {

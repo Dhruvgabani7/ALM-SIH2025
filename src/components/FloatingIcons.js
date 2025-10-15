@@ -36,25 +36,25 @@ const FloatingIcons = () => {
     switch (movement) {
       case 'circular':
         return {
-          x: [0, 30, 0, -30, 0],
-          y: [0, -30, 0, 30, 0],
-          rotate: [0, 90, 180, 270, 360],
+          x: [0, 24, 0, -24, 0],
+          y: [0, -24, 0, 24, 0],
+          rotate: [0, 60, 120, 240, 360],
         };
       case 'vertical':
         return {
-          y: [0, -40, 0],
-          x: [0, 10, -10, 0],
+          y: [0, -30, 0],
+          x: [0, 8, -8, 0],
         };
       case 'figure8':
         return {
-          x: [0, 20, 0, -20, 0],
-          y: [0, -20, 0, 20, 0],
-          rotate: [0, 45, 0, -45, 0],
+          x: [0, 18, 0, -18, 0],
+          y: [0, -16, 0, 16, 0],
+          rotate: [0, 36, 0, -36, 0],
         };
       default:
         return {
-          y: [0, -20, 0],
-          rotate: [0, 5, -5, 0],
+          y: [0, -16, 0],
+          rotate: [0, 4, -4, 0],
         };
     }
   };
@@ -67,15 +67,16 @@ const FloatingIcons = () => {
           className={`absolute ${position} w-16 h-16 ${color} opacity-80 pointer-events-auto cursor-pointer`}
           animate={getMovementAnimation(movement, index)}
           transition={{
-            duration: 6 + index * 2,
+            duration: 6 + index * 1.5,
             repeat: Infinity,
-            ease: "easeInOut",
-            delay: index * 0.8,
+            ease: [0.22, 0.8, 0.2, 1],
+            delay: index * 0.6,
           }}
+          // keep the motion running while still providing hover feedback
           whileHover={{
-            scale: 1.3,
+            scale: 1.12,
             opacity: 1,
-            transition: { duration: 0.3 }
+            transition: { duration: 0.4, ease: [0.22, 0.8, 0.2, 1] }
           }}
           onHoverStart={() => setHoveredIcon(label)}
           onHoverEnd={() => setHoveredIcon(null)}

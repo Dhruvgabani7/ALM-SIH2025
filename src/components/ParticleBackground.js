@@ -29,28 +29,30 @@ const ParticleBackground = () => {
               enable: true,
               mode: "push",
             },
+            // disable hover interactions so cursor does not move the constellation
             onHover: {
-              enable: true,
+              enable: false,
               mode: "repulse",
             },
             resize: true,
           },
           modes: {
             push: {
-              quantity: 4,
+              quantity: 3,
             },
             repulse: {
-              distance: 200,
-              duration: 0.4,
+              // shorter, gentler repulse so cursor doesn't freeze motion
+              distance: 120,
+              duration: 0.15
             },
           },
         },
         particles: {
           color: {
-            value: ["#00FF88", "#00D4FF", "#FF0080"],
+            value: ["#8FD3FF", "#5AC8FF", "#2B9CFF"],
           },
           links: {
-            color: "#00FF88",
+            color: "#7CCBFF",
             distance: 150,
             enable: true,
             opacity: 0.3,
@@ -62,9 +64,11 @@ const ParticleBackground = () => {
             outModes: {
               default: "bounce",
             },
-            random: false,
-            speed: 1,
+            random: true,
+            speed: 0.6,
             straight: false,
+            // reduce abrupt changes
+            warp: false,
           },
           number: {
             density: {

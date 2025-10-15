@@ -43,12 +43,12 @@
 
 /* Custom CSS Variables for Cyberpunk Theme */
 :root {
-  --primary-color: #00FF88;
-  --secondary-color: #00D4FF;
-  --accent-color: #FF0080;
-  --primary-rgb: 0, 255, 136;
-  --secondary-rgb: 0, 212, 255;
-  --accent-rgb: 255, 0, 128;
+  --primary-color: #2B9CFF;
+  --secondary-color: #5AC8FF;
+  --accent-color: #8FD3FF;
+  --primary-rgb: 43, 156, 255;
+  --secondary-rgb: 90, 200, 255;
+  --accent-rgb: 143, 211, 255;
 }
 
 /* Base Styles */
@@ -91,6 +91,15 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Blue neon gradient for headings */
+.gradient-text-blue {
+  background: linear-gradient(135deg, #2B9CFF 0%, #5AC8FF 50%, #8FD3FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(43,156,255,0.45));
 }
 
 .glassmorphism {

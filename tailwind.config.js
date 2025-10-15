@@ -5,9 +5,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#00FF88',
-        secondary: '#00D4FF',
-        accent: '#FF0080',
+        // switched primary/secondary/accent to blue-themed palette
+        primary: '#2B9CFF',
+        secondary: '#5AC8FF',
+        accent: '#8FD3FF',
         dark: {
           100: '#0a0a0a',
           200: '#1a1a2e',
@@ -36,12 +37,12 @@ module.exports = {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-20px)' },
         },
-        'pulse-glow': {
+          'pulse-glow': {
           '0%, 100%': { 
-            boxShadow: '0 0 20px rgba(0, 255, 136, 0.5)' 
+            boxShadow: '0 0 20px rgba(43, 156, 255, 0.5)' 
           },
           '50%': { 
-            boxShadow: '0 0 40px rgba(0, 255, 136, 0.8), 0 0 60px rgba(0, 212, 255, 0.6)' 
+            boxShadow: '0 0 40px rgba(43, 156, 255, 0.8), 0 0 60px rgba(90, 200, 255, 0.6)' 
           },
         },
         wave: {
@@ -68,12 +69,12 @@ module.exports = {
           '0%': { transform: 'scale(0)', opacity: '1' },
           '100%': { transform: 'scale(4)', opacity: '0' },
         },
-        'glow-pulse': {
+          'glow-pulse': {
           '0%, 100%': { 
-            boxShadow: '0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 212, 255, 0.2)' 
+            boxShadow: '0 0 20px rgba(43, 156, 255, 0.3), 0 0 40px rgba(90, 200, 255, 0.2)' 
           },
           '50%': { 
-            boxShadow: '0 0 30px rgba(0, 255, 136, 0.6), 0 0 60px rgba(0, 212, 255, 0.4)' 
+            boxShadow: '0 0 30px rgba(43, 156, 255, 0.6), 0 0 60px rgba(90, 200, 255, 0.4)' 
           },
         },
         'bounce-gentle': {

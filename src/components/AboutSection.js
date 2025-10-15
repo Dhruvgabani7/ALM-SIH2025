@@ -229,7 +229,7 @@ const AboutSection = () => {
               ))}
               <defs>
                 <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#00FF88" stopOpacity="0.5" />
+                  <stop offset="0%" stopColor="#2B9CFF" stopOpacity="0.5" />
                   <stop offset="50%" stopColor="#00D4FF" stopOpacity="0.3" />
                   <stop offset="100%" stopColor="#FF0080" stopOpacity="0.5" />
                 </linearGradient>

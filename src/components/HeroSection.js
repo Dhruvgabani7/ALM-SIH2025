@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FaMicrophone } from 'react-icons/fa';
 import FloatingIcons from './FloatingIcons';
 
 const HeroSection = () => {
   const canvasRef = useRef(null);
-  const [isHovering, setIsHovering] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  // use refs for frequent updates so we don't re-create the animation loop on every mouse move
+  const isHoveringRef = useRef(false);
+  const mousePositionRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     // Initialize enhanced waveform animation
@@ -16,6 +17,8 @@ const HeroSection = () => {
     const ctx = canvas.getContext('2d');
     let animationId;
     let time = 0;
+    let lastTs = performance.now();
+    const smoothedMouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -25,9 +28,16 @@ const HeroSection = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    const animate = () => {
+    const animate = (ts) => {
+      const delta = (ts - lastTs) / 1000; // seconds
+      lastTs = ts;
+
+      // Smoothly follow the mouse to avoid jittery interactive effects
+      smoothedMouse.x += (mousePositionRef.current.x - smoothedMouse.x) * Math.min(1, 6 * delta);
+      smoothedMouse.y += (mousePositionRef.current.y - smoothedMouse.y) * Math.min(1, 6 * delta);
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       const barWidth = (canvas.width / 80) * 1.5;
       const spacing = 2;
       let x = 0;
@@ -38,52 +48,75 @@ const HeroSection = () => {
         const wave2 = Math.sin(time * 0.7 + i * 0.25) * 0.2;
         const wave3 = Math.cos(time * 0.5 + i * 0.1) * 0.15;
         const baseAmplitude = wave1 + wave2 + wave3 + 0.35;
-        
-        const hoverMultiplier = isHovering ? 1.4 : 1;
-        const amplitude = Math.abs(baseAmplitude) * hoverMultiplier;
-        const barHeight = amplitude * canvas.height * 0.45;
 
-        // Calculate distance from mouse for interactive glow
-        const mouseDistance = Math.sqrt(
-          Math.pow(mousePosition.x - x, 2) + Math.pow(mousePosition.y - canvas.height / 2, 2)
-        );
+        const hoverMultiplier = isHoveringRef.current ? 1.25 : 1;
+        const amplitude = Math.abs(baseAmplitude) * hoverMultiplier;
+  const barHeightRaw = amplitude * canvas.height * 0.45;
+  const barHeight = Number.isFinite(barHeightRaw) ? Math.max(0, barHeightRaw) : 0;
+
+        // Calculate distance from smoothed mouse for interactive glow
+        const mouseDistance = Math.hypot(smoothedMouse.x - x, smoothedMouse.y - canvas.height / 2);
         const mouseEffect = Math.max(0, 1 - mouseDistance / 300);
 
         // Create gradient for each bar
         const gradient = ctx.createLinearGradient(x, canvas.height / 2 - barHeight / 2, x, canvas.height / 2 + barHeight / 2);
-        
-        // Dynamic color based on position and amplitude
-        const hue = (i / 80) * 60 + 140; // Green to cyan range
-        const saturation = 70 + amplitude * 30;
-        const lightness = 45 + amplitude * 20 + mouseEffect * 15;
-        const alpha = 0.6 + amplitude * 0.3 + mouseEffect * 0.2;
-        
+
+  // Dynamic color based on position and amplitude
+  // Blue theme: hue range approx 200-240
+  const hueRaw = (i / 80) * 40 + 200; // Blue range
+  const hue = Number.isFinite(hueRaw) ? hueRaw : 140;
+  const saturationRaw = 70 + amplitude * 30;
+  const saturation = Number.isFinite(saturationRaw) ? Math.max(0, Math.min(100, saturationRaw)) : 70;
+  const lightnessRaw = 45 + amplitude * 20 + mouseEffect * 12;
+  const lightness = Number.isFinite(lightnessRaw) ? Math.max(0, Math.min(100, lightnessRaw)) : 45;
+  const alphaRaw = 0.6 + amplitude * 0.25 + mouseEffect * 0.18;
+  const alpha = Number.isFinite(alphaRaw) ? Math.max(0, Math.min(1, alphaRaw)) : 0.6;
+
         gradient.addColorStop(0, `hsla(${hue}, ${saturation}%, ${lightness + 10}%, ${alpha})`);
         gradient.addColorStop(0.5, `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`);
         gradient.addColorStop(1, `hsla(${hue}, ${saturation}%, ${lightness - 10}%, ${alpha * 0.8})`);
 
         ctx.fillStyle = gradient;
-        
-        // Enhanced glow effect
-        const glowIntensity = isHovering ? 20 + mouseEffect * 15 : 12;
-        ctx.shadowBlur = glowIntensity;
-        ctx.shadowColor = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha * 0.8})`;
-        
+
+  // Enhanced glow effect
+  const glowIntensityRaw = isHoveringRef.current ? 18 + mouseEffect * 12 : 10;
+  const glowIntensity = Number.isFinite(glowIntensityRaw) ? Math.max(0, glowIntensityRaw) : 10;
+  ctx.shadowBlur = glowIntensity;
+  // Compose a safe shadow color
+  const shadowAlpha = Number.isFinite(alpha) ? Math.max(0, Math.min(1, alpha * 0.8)) : 0.5;
+  ctx.shadowColor = `hsla(${hue}, ${saturation}%, ${lightness}%, ${shadowAlpha})`;
+
         // Rounded bars for smoother look
         ctx.beginPath();
         const radius = barWidth / 2;
         const y = canvas.height / 2 - barHeight / 2;
-        ctx.roundRect(x, y, barWidth, barHeight, radius);
+        if (ctx.roundRect) {
+          ctx.roundRect(x, y, barWidth, barHeight, radius);
+        } else {
+          // fallback rounded rect
+          const r = Math.min(radius, barHeight / 2);
+          ctx.moveTo(x + r, y);
+          ctx.arcTo(x + barWidth, y, x + barWidth, y + barHeight, r);
+          ctx.arcTo(x + barWidth, y + barHeight, x, y + barHeight, r);
+          ctx.arcTo(x, y + barHeight, x, y, r);
+          ctx.arcTo(x, y, x + barWidth, y, r);
+          ctx.closePath();
+        }
         ctx.fill();
-        
+
         x += barWidth + spacing;
       }
 
-      time += isHovering ? 0.06 : 0.04;
+      // advance time based on real delta for consistent smooth motion
+      const baseSpeed = 1.2; // tweak for perceived speed
+      const hoverSpeedMultiplier = isHoveringRef.current ? 1.6 : 1;
+      time += delta * baseSpeed * hoverSpeedMultiplier;
+
       animationId = requestAnimationFrame(animate);
     };
 
-    animate();
+  // Start the animation using requestAnimationFrame so the `ts` timestamp is provided
+  animationId = requestAnimationFrame(animate);
 
     return () => {
       if (animationId) {
@@ -91,10 +124,10 @@ const HeroSection = () => {
       }
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, [isHovering, mousePosition]);
+  }, []);
 
   const handleMouseMove = (e) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
+    mousePositionRef.current = { x: e.clientX, y: e.clientY };
   };
 
   const containerVariants = {
@@ -149,8 +182,8 @@ const HeroSection = () => {
     <section 
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+        onMouseEnter={() => { isHoveringRef.current = true; }}
+        onMouseLeave={() => { isHoveringRef.current = false; }}
     >
       {/* Background Waveform */}
       <div className="absolute inset-0 z-0">
@@ -195,9 +228,9 @@ const HeroSection = () => {
             }}
           >
             <div className="w-32 h-32 md:w-40 md:h-40 text-primary flex items-center justify-center relative">
-              <FaMicrophone className="w-full h-full" />
-              <div className="absolute inset-0 rounded-full bg-primary opacity-20 animate-pulse-glow"></div>
-              <div className="absolute inset-0 rounded-full border-2 border-primary opacity-50 animate-ping"></div>
+              <FaMicrophone className="w-full h-full text-[#2B9CFF] drop-shadow-[0_0_20px_rgba(43,156,255,0.4)]" />
+              <div className="absolute inset-0 rounded-full" style={{ background: 'rgba(43,156,255,0.12)', filter: 'blur(6px)' }}></div>
+              <div className="absolute inset-0 rounded-full border-2" style={{ borderColor: 'rgba(124,203,255,0.45)', opacity: 0.5 }}></div>
             </div>
           </motion.div>
         </motion.div>
@@ -208,7 +241,7 @@ const HeroSection = () => {
             className="text-5xl md:text-7xl lg:text-8xl font-orbitron font-black mb-2 uppercase tracking-tight"
             variants={containerVariants}
           >
-            <motion.span className="gradient-text inline-block" variants={wordVariants}>
+            <motion.span className="gradient-text-blue inline-block" variants={wordVariants}>
               ALM
             </motion.span>
             <motion.span className="text-white mx-3 md:mx-6" variants={wordVariants}>

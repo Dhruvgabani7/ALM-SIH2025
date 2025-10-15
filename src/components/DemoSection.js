@@ -65,7 +65,7 @@ const DemoSection = () => {
       ctx.beginPath();
       ctx.strokeStyle = gradient;
       ctx.lineWidth = 2;
-      ctx.shadowColor = '#00FF88';
+  ctx.shadowColor = 'rgba(43,156,255,0.8)';
       ctx.shadowBlur = 10;
       
       for (let x = 0; x < canvas.width; x += 2) {
