@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { FaMicrophone } from 'react-icons/fa';
 import FloatingIcons from './FloatingIcons';
 
-const HeroSection = () => {
+const HeroSection = ({ onNavigateToVoiceDemo }) => {
   const canvasRef = useRef(null);
   // use refs for frequent updates so we don't re-create the animation loop on every mouse move
   const isHoveringRef = useRef(false);
@@ -180,7 +180,7 @@ const HeroSection = () => {
 
   return (
     <section 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="flex overflow-hidden relative justify-center items-center min-h-screen"
       onMouseMove={handleMouseMove}
         onMouseEnter={() => { isHoveringRef.current = true; }}
         onMouseLeave={() => { isHoveringRef.current = false; }}
@@ -196,8 +196,8 @@ const HeroSection = () => {
 
       {/* Parallax Background Layers */}
       <div className="absolute inset-0 z-1">
-        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-primary/5 to-secondary/5 animate-pulse"></div>
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-accent/3 to-transparent animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent animate-pulse via-primary/5 to-secondary/5"></div>
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent to-transparent animate-pulse via-accent/3" style={{ animationDelay: '1s' }}></div>
       </div>
 
       {/* Floating Icons */}
@@ -205,14 +205,14 @@ const HeroSection = () => {
 
       {/* Main Content */}
       <motion.div
-        className="relative z-10 text-center max-w-6xl mx-auto px-4"
+        className="relative z-10 px-4 mx-auto max-w-6xl text-center"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         {/* Microphone Icon */}
         <motion.div
-          className="mb-12 flex justify-center"
+          className="flex justify-center mb-12"
           variants={itemVariants}
         >
           <motion.div
@@ -227,7 +227,7 @@ const HeroSection = () => {
               rotate: { duration: 6, repeat: Infinity, ease: "easeInOut" }
             }}
           >
-            <div className="w-32 h-32 md:w-40 md:h-40 text-primary flex items-center justify-center relative">
+            <div className="flex relative justify-center items-center w-32 h-32 md:w-40 md:h-40 text-primary">
               <FaMicrophone className="w-full h-full text-[#2B9CFF] drop-shadow-[0_0_20px_rgba(43,156,255,0.4)]" />
               <div className="absolute inset-0 rounded-full" style={{ background: 'rgba(43,156,255,0.12)', filter: 'blur(6px)' }}></div>
               <div className="absolute inset-0 rounded-full border-2" style={{ borderColor: 'rgba(124,203,255,0.45)', opacity: 0.5 }}></div>
@@ -238,43 +238,43 @@ const HeroSection = () => {
         {/* Headlines */}
         <motion.div className="mb-10" variants={itemVariants}>
           <motion.h1
-            className="text-5xl md:text-7xl lg:text-8xl font-orbitron font-black mb-2 uppercase tracking-tight"
+            className="mb-2 text-5xl font-black tracking-tight uppercase md:text-7xl lg:text-8xl font-orbitron"
             variants={containerVariants}
           >
-            <motion.span className="gradient-text-blue inline-block" variants={wordVariants}>
+            <motion.span className="inline-block gradient-text-blue" variants={wordVariants}>
               ALM
             </motion.span>
-            <motion.span className="text-white mx-3 md:mx-6" variants={wordVariants}>
+            <motion.span className="mx-3 text-white md:mx-6" variants={wordVariants}>
               —
             </motion.span>
           </motion.h1>
           
           <motion.h2
-            className="text-3xl md:text-5xl lg:text-6xl font-orbitron font-bold uppercase tracking-wide mb-6"
+            className="mb-6 text-3xl font-bold tracking-wide uppercase md:text-5xl lg:text-6xl font-orbitron"
             variants={containerVariants}
           >
             <motion.span className="text-white" variants={wordVariants}>
               Listen
             </motion.span>
-            <motion.span className="text-primary mx-2" variants={wordVariants}>
+            <motion.span className="mx-2 text-primary" variants={wordVariants}>
               .
             </motion.span>
             <motion.span className="text-white" variants={wordVariants}>
               Think
             </motion.span>
-            <motion.span className="text-primary mx-2" variants={wordVariants}>
+            <motion.span className="mx-2 text-primary" variants={wordVariants}>
               .
             </motion.span>
             <motion.span className="text-white" variants={wordVariants}>
               Understand
             </motion.span>
-            <motion.span className="text-primary mx-2" variants={wordVariants}>
+            <motion.span className="mx-2 text-primary" variants={wordVariants}>
               .
             </motion.span>
           </motion.h2>
           
           <motion.p
-            className="text-base md:text-lg lg:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light"
+            className="mx-auto max-w-3xl text-base font-light leading-relaxed text-gray-400 md:text-lg lg:text-xl"
             variants={itemVariants}
           >
             AI that recognizes speech, non-speech sounds, and understands context in multiple languages.
@@ -283,17 +283,18 @@ const HeroSection = () => {
 
         {/* CTA Buttons */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+          className="flex flex-col gap-6 justify-center items-center sm:flex-row"
           variants={itemVariants}
         >
           <motion.button
-            className="relative px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-full text-lg uppercase tracking-wider overflow-hidden group"
+            onClick={onNavigateToVoiceDemo}
+            className="overflow-hidden relative px-8 py-4 text-lg font-semibold tracking-wider text-white uppercase bg-gradient-to-r rounded-full from-primary to-secondary group"
             variants={buttonVariants}
             whileHover="hover"
             whileTap="tap"
             animate={{ boxShadow: "0 0 30px rgba(0, 255, 136, 0.3)" }}
           >
-            <span className="relative z-10 flex items-center gap-2">
+            <span className="flex relative z-10 gap-2 items-center">
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -302,8 +303,8 @@ const HeroSection = () => {
               </motion.div>
               Try Demo
             </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity duration-300 from-secondary to-accent group-hover:opacity-100"></div>
+            <div className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></div>
             {/* Ripple Effect */}
             <motion.div
               className="absolute inset-0 rounded-full bg-white/30"
@@ -314,7 +315,7 @@ const HeroSection = () => {
           </motion.button>
 
           <motion.button
-            className="relative px-8 py-4 border-2 border-primary text-primary font-semibold rounded-full text-lg uppercase tracking-wider hover:bg-primary hover:text-white transition-all duration-300 overflow-hidden group"
+            className="overflow-hidden relative px-8 py-4 text-lg font-semibold tracking-wider uppercase rounded-full border-2 transition-all duration-300 border-primary text-primary hover:bg-primary hover:text-white group"
             variants={buttonVariants}
             whileHover="hover"
             whileTap="tap"
@@ -329,7 +330,7 @@ const HeroSection = () => {
             />
             {/* Glow Effect */}
             <motion.div
-              className="absolute inset-0 rounded-full border-2 border-primary opacity-0"
+              className="absolute inset-0 rounded-full border-2 opacity-0 border-primary"
               whileHover={{ 
                 opacity: 1,
                 boxShadow: "0 0 20px rgba(0, 255, 136, 0.5)",
